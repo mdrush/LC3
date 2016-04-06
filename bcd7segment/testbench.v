@@ -1,7 +1,7 @@
 // Testbench
 module test;
 
-  reg  clk;
+  reg clk;
   reg [3:0] in;
   wire [6:0] out;
   
