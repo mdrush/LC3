@@ -30,10 +30,11 @@ ld_reg = 1;
 
 
 $display("%h", SR1_OUT);
-toggle_clk;
 ld_reg = 0;
 toggle_clk;
 $display("%h", SR1_OUT);
+SR2 = 3'b000;
+toggle_clk;
 
 end
 
