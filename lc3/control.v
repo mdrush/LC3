@@ -53,10 +53,88 @@ always @(posedge clk) begin
             if (R) state <= 35;
             else state <= 33;
         end
-        
-
-
-
+        35 : begin
+            state <= 32;
+        end
+        32 : begin
+            state <= IR[15:12];
+        end
+        1 : begin
+            state <= 18;
+        end
+        5 : begin
+            state <= 18;
+        end
+        9 : begin
+            state <= 18;
+        end
+        15 : begin
+            state <= 28;
+        end
+        28 : begin
+            if (R) state <= 30;
+            else state <= 28;
+        end
+        30 : begin
+            state <= 18;
+        end
+        14 : begin
+            state <= 18;
+        end
+        2, 6, 26 : begin
+            state <= 25;
+        end
+        25 : begin
+            if (R) state <= 27;
+            else state <= 25;
+        end
+        27 : begin
+            state <= 18;
+        end
+        10 : begin
+            state <= 24;
+        end
+        24 : begin
+            if (R) state <= 26;
+            else state <= 24;
+        end        
+        11 : begin
+            state <= 29;
+        end
+        29 : begin
+            if (R) state <= 31;
+            else state <= 29;
+        end     
+        31, 7, 3 : begin
+            state <= 23;
+        end
+        23 : begin
+            state <= 16;
+        end
+        16 : begin
+            if (R) state <= 18;
+            else state <= 16;
+        end
+        4 : begin
+            if (IR[11]) state <= 21;
+            else state <= 20;
+        end
+        21 : begin
+            state <= 18;
+        end        
+        20 : begin
+            state <= 18;
+        end
+        12 : begin
+            state <= 18;
+        end        
+        0 : begin
+            if (BEN) state <= 22;
+            else state <= 18;
+        end
+        22 : begin
+            state <= 18;
+        end                
 
 end
 
