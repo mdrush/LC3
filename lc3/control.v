@@ -136,6 +136,80 @@ always @(posedge clk) begin
             state <= 18;
         end                
 
+        //Interrupt and Exception Control
+        49 : begin
+            if (PSR[15]) state <= 45;
+            else state <= 37;
+        end
+        45 : begin
+            state <= 37;
+        end
+        37 : begin
+            state <= 41;
+        end
+        41 : begin
+            if (R) state <= 43;
+            else state <= 41;
+        end
+        43 : begin
+            state <= 47;
+        end
+        48 : begin
+            if (R) state <= 50;
+            else state <= 48;
+        end
+        50 : begin
+            state <= 52;
+        end
+        52 : begin
+            if (R) state <= 54;
+            else state <= 52;
+        end        
+        54 : begin
+            state <= 18;
+        end
+        
+        13 : begin
+            if (PSR[15]) state <= 37;
+            else state <= 45;
+        end
+        
+        8 : begin
+            if (PSR[15]) state <= 44;
+            else state <= 36;
+        end
+        44 : begin
+            state <= 45;
+        end
+        36 : begin
+            if (R) state <= 38;
+            else state <= 36;
+        end
+        38 : begin
+            state <= 39;
+        end
+        39 : begin
+            state <= 40;
+        end
+        40 : begin
+            if (R) state <= 42;
+            else state <= 40;
+        end
+        42 : begin
+            state <= 34;
+        end
+        34 : begin
+            if (PSR[15]) state <= 59;
+            else state <= 51;
+        end
+        59 : begin
+            state <= 18;
+        end
+        51 : begin
+            state <= 18;
+        end
+        
+        
 end
 
 endmodule
