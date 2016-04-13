@@ -13,11 +13,11 @@ module microsequencer(INT, R, IR, BEN, PSR, cond, controlst, J, IRD);
   
   always @(cond) begin
     case (cond)
-      3'b011 : controlst = (INT) ? 6'b000001 : 6'b000000; //Address Mode
+      3'b011 : controlst = (IR[11]) ? 6'b000001 : 6'b000000; //Address Mode
       3'b001 : controlst = (R) ? 6'b000010 : 6'b000000; //Memory Ready
-      3'b010 : controlst = (IR[11]) ? 6'b000100 : 6'b000000; //Branch
-      3'b100 : controlst = (BEN) ? 6'b001000 : 6'b000000; //Privilege Mode
-      3'b101 : controlst = (PSR) ? 6'b010000 : 6'b000000; //Interrupt Present
+      3'b010 : controlst = (BEN) ? 6'b000100 : 6'b000000; //Branch
+      3'b100 : controlst = (PSR) ? 6'b001000 : 6'b000000; //Privilege Mode
+      3'b101 : controlst = (INT) ? 6'b010000 : 6'b000000; //Interrupt Present
       default: controlst = 6'b000000;
     endcase
     controlst <= controlst | J;
