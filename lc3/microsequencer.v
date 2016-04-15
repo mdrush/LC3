@@ -18,6 +18,7 @@ module microsequencer(INT, R, IR, BEN, PSR, cond, controlst, J, IRD);
       3'b010 : controlst = (IR[11]) ? 6'b000100 : 6'b000000; //Branch
       3'b100 : controlst = (BEN) ? 6'b001000 : 6'b000000; //Privilege Mode
       3'b101 : controlst = (PSR) ? 6'b010000 : 6'b000000; //Interrupt Present
+      //FIXME
       default: controlst = 6'b000000;
     endcase
     controlst <= controlst | J;
