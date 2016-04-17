@@ -84,27 +84,33 @@ int main() {
 
 	states[1].comment = "ADD";
 	states[1].setControl(LD_REG, LD_CC, GateALU);
-	setArray(states[1].DRMUX, "01");
-	setArray(states[1].SR1MUX, "10");
+	setArray(states[1].DRMUX, "00");
+	setArray(states[1].SR1MUX, "01");
 	setArray(states[1].ALUK, "00");
 
 	states[2].comment = "LD";
 	states[2].setControl(LD_MAR, LD_CC);
-	setArray(states[2].DRMUX, "01");
+	setArray(states[2].DRMUX, "00");
 
 	states[3].comment = "ST";
+	states[3].setControl(LD_MAR, GatePC);
+	setArray(states[3].ADDR2MUX, "10");
 
 	states[4].comment = "JSR";
+	states[4].setControl(LD_REG, GatePC);
+	setArray(states[4].DRMUX, "10");
+	setArray(states[4].PCMUX, "00");
 
 	states[5].comment = "AND";
 	states[5].setControl(LD_REG, LD_CC, GateALU);
-	setArray(states[5].DRMUX, "01");
-	setArray(states[5].SR1MUX, "10");
+	setArray(states[5].DRMUX, "00");
+	setArray(states[5].SR1MUX, "01");
 	setArray(states[5].ALUK, "01");
 
 	states[6].comment = "LDR";
-	states[6].setControl(LD_CC);
-	setArray(states[6].DRMUX, "01");
+	states[6].setControl(LD_MAR);
+	setArray(states[6].DRMUX, "00");
+	setArray(states[6].ADDR2MUX, "01");
 
 	states[7].comment = "STR";
 
@@ -113,13 +119,13 @@ int main() {
 
 	states[9].comment = "NOT";
 	states[9].setControl(LD_REG, LD_CC, GateALU);
-	setArray(states[9].DRMUX, "01");
-	setArray(states[9].SR1MUX, "10");
+	setArray(states[9].DRMUX, "00");
+	setArray(states[9].SR1MUX, "01");
 	setArray(states[9].ALUK, "10");
 
 	states[10].comment = "LDI";
 	states[10].setControl(LD_CC);
-	setArray(states[10].DRMUX, "01");
+	setArray(states[10].DRMUX, "00");
 
 	states[11].comment = "STI";
 
@@ -129,8 +135,9 @@ int main() {
 
 	states[14].comment = "LEA";
 	states[14].setControl(LD_REG, LD_CC, GatePC);
-	setArray(states[14].DRMUX, "01");
-	setArray(states[14].ADDR2MUX, "11");
+	setArray(states[14].DRMUX, "00");
+	setArray(states[14].ADDR2MUX, "10");
+	states[14].ADDR1MUX = 1;
 
 	states[15].comment = "TRAP";
 
@@ -138,7 +145,8 @@ int main() {
 	states[16].MIO_EN = 1;
 	states[16].R_W = 1;
 
-	states[18].setControl(LD_MAR, LD_PC, GatePC, R_W);
+	states[18].setControl(LD_MAR, LD_PC, GatePC);
+	states[18].R_W = 1;
 	setArray(states[18].PCMUX, "00");
 
 	states[24].setControl(LD_MDR);

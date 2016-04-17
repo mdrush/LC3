@@ -31,15 +31,15 @@ microsequencer MICROSEQUENCER(.INT(INT),
 always @(posedge clk) begin
 
     case (DRMUX)
-        1 : assign DR = IR[11:9];
-        2 : assign DR = 3'b110; //R6
-        3 : assign DR = 3'b111; //R7
+        0 : assign DR = IR[11:9];
+        1 : assign DR = 3'b110; //R6
+        2 : assign DR = 3'b111; //R7
     endcase
 
     case (SR1MUX)
-        1 : assign SR1 = IR[11:9];
-        2 : assign SR1 = IR[8:6];
-        3 : assign SR1 = 3'b110; //R6
+        0 : assign SR1 = IR[11:9];
+        1 : assign SR1 = IR[8:6];
+        2 : assign SR1 = 3'b110; //R6
     endcase
     
 
