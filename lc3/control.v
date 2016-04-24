@@ -1,57 +1,27 @@
-module control(clk, IR, R, N, Z, P);
+module control(clk, BEN, IR, R, PSR, INT, currentcs);
     
     input clk;
-    input IR;
+    input BEN;
+    input [15:0] IR;
     input R;
+    input PSR; // PSR[15]
+    input INT;
 
-    input N;
-    input Z;
-    input P;
-    wire BEN; //p131-132
-
-    wire SR1;
-    reg [15:0] SR2;
-    wire SR2MUX;
-    wire [1:0] SR1MUX; //11.9 -> src IR[11:9], 8.6 -> src 8.6, SP -> src R6
-    wire [2:0] DR;
-    wire [1:0] DRMUX; //11.9 -> dest IR[11:9], R7 -> dest R7, SP -> dest R6
-  
     reg [5:0] state;
+    reg [38:0] controlsig [63:0];
+    output wire [38:0] currentcs;
 
-microsequencer MICROSEQUENCER(.INT(INT),
-    .R(R),
-    .IR(IR),
-    .BEN(BEN),
-    .PSR(PSR),
-    .cond(cond),
-    .controlst(controlst),
-    .J(J),
-    .IRD(IRD));
 
-always @(posedge clk) begin
-
-    case (DRMUX)
-        0 : assign DR = IR[11:9];
-        1 : assign DR = 3'b110; //R6
-        2 : assign DR = 3'b111; //R7
-    endcase
-
-    case (SR1MUX)
-        0 : assign SR1 = IR[11:9];
-        1 : assign SR1 = IR[8:6];
-        2 : assign SR1 = 3'b110; //R6
-    endcase
-    
-
-    case(SR2MUX)
-        0 : assign SR2 = SR2_OUT;
-        1 : assign SR2 = {11{IR[4]}, IR[4:0]}; //SEXT
-    endcase
-
-    assign BEN = ((IR[11] & N) | (IR[10] & Z) | (IR[9] & P));
+initial begin
+	$readmemb("cs/controlstore", controlsig);
+	state = 18;
 end
 
+//always @(state) begin
+    assign currentcs = controlsig[state];
+//
 always @(posedge clk) begin
+
     case (state)
         18 : begin //prep for fetch
             if (INT) state <= 49;
@@ -146,7 +116,7 @@ always @(posedge clk) begin
 
         //Interrupt and Exception Control
         49 : begin
-            if (PSR[15]) state <= 45;
+            if (PSR) state <= 45;
             else state <= 37;
         end
         45 : begin
@@ -178,12 +148,12 @@ always @(posedge clk) begin
         end
         
         13 : begin
-            if (PSR[15]) state <= 37;
+            if (PSR) state <= 37;
             else state <= 45;
         end
         
         8 : begin
-            if (PSR[15]) state <= 44;
+            if (PSR) state <= 44;
             else state <= 36;
         end
         44 : begin
@@ -207,7 +177,7 @@ always @(posedge clk) begin
             state <= 34;
         end
         34 : begin
-            if (PSR[15]) state <= 59;
+            if (PSR) state <= 59;
             else state <= 51;
         end
         59 : begin
@@ -217,7 +187,8 @@ always @(posedge clk) begin
             state <= 18;
         end
         
-        
+    endcase
+
 end
 
 endmodule

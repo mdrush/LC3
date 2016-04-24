@@ -1,0 +1,6 @@
+.ORIG x3000
+AND R1, R1, #0
+main ADD R1, R1, #5
+BRp main
+HALT
+.END

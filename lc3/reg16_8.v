@@ -15,6 +15,12 @@ module reg16_8(clk, ld_reg, SR1, SR1_OUT, SR2, SR2_OUT, DR, global);
 
     input [15:0] global;
 
+    integer i;
+initial begin
+    for (i = 0; i < 8; i = i + 1)
+        regs[i] = 16'h0000;
+end
+
 
  always @(posedge clk) begin
         SR1_OUT <= regs[SR1];
