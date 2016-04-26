@@ -193,7 +193,8 @@ int main() {
 	states[25].MIO_EN = 1;
 
 	states[26].setControl(LD_MAR, GateMDR);
-	states[27].setControl(LD_REG, LD_CC, GateALU);
+
+	states[27].setControl(LD_REG, LD_CC, GateMDR);
 
 	states[28].setControl(LD_MDR, LD_REG, GatePC);
 	setArray(states[28].DRMUX, "01");
