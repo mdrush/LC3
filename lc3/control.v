@@ -1,6 +1,7 @@
-module control(clk, BEN, IR, R, PSR, INT, currentcs);
+module control(clk, BEN, IR, R, PSR, INT, currentcs, reset);
     
     input clk;
+    input reset;
     input BEN;
     input [15:0] IR;
     input R;
@@ -14,12 +15,16 @@ module control(clk, BEN, IR, R, PSR, INT, currentcs);
 
 initial begin
 	$readmemb("cs/controlstore", controlsig);
-	state = 18;
 end
 
-//always @(state) begin
-    assign currentcs = controlsig[state];
-//
+always @(posedge clk) begin
+    if (reset) begin
+        state <= 33;
+    end
+end
+
+assign currentcs = controlsig[state];
+
 always @(posedge clk) begin
 
     case (state)

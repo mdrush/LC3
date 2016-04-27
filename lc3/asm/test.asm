@@ -1,6 +1,7 @@
 .ORIG x3000
-AND R1, R1, #0
-main ADD R1, R1, #5
+ADD R1, R1, #5
+main ADD R0, R0, #1
+ADD R1, R1, #-1
 BRp main
 HALT
 .END
