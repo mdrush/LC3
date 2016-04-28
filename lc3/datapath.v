@@ -48,7 +48,7 @@ module datapath(clk, reset);
     reg [15:0] PCMUX;
 
 
-reg16_8 REGFILE(.clk(clk), .ld_reg(currentcs[33]), .SR1(SR1), .SR2(SR2), .DR(DR),
+reg16_8 REGFILE(.clk(clk), .ld_reg(currentcs[34]), .SR1(SR1), .SR2(SR2), .DR(DR),
     .SR1_OUT(SR1_OUT), .SR2_OUT(SR2_OUT), .global(global));
 
 alu ALU(.A(SR1_OUT), .B(SR2MUX_OUT), .ALUK(currentcs[4:3]), .OUT(ALU_OUT));
