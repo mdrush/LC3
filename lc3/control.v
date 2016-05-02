@@ -19,7 +19,7 @@ end
 
 always @(posedge clk) begin
     if (reset) begin
-        state <= 33;
+        state <= 18;
     end
 end
 

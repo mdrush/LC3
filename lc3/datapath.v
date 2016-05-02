@@ -48,7 +48,7 @@ module datapath(clk, reset);
     reg [15:0] PCMUX;
 
 
-reg16_8 REGFILE(.clk(clk), .ld_reg(currentcs[33]), .SR1(SR1), .SR2(SR2), .DR(DR),
+reg16_8 REGFILE(.clk(clk), .ld_reg(currentcs[34]), .SR1(SR1), .SR2(SR2), .DR(DR),
     .SR1_OUT(SR1_OUT), .SR2_OUT(SR2_OUT), .global(global));
 
 alu ALU(.A(SR1_OUT), .B(SR2MUX_OUT), .ALUK(currentcs[4:3]), .OUT(ALU_OUT));
@@ -57,7 +57,7 @@ control CONTROL(.clk(clk), .BEN(BEN), .IR(IR), .R(R), .PSR(PSR[15]), .INT(INT),
     .currentcs(currentcs), .reset(reset));
 
 memory MEMORY(.clk(clk), .MIO_EN(currentcs[2]), .R_W(currentcs[1]), .a(MAR),
-	.d_out(d_out), .d_in(d_in), .R(R));
+	.d_out(d_out), .d_in(d_in), .R(R), .global(global));
 
 initial begin
 	BEN = 0;
@@ -86,6 +86,20 @@ assign global = (currentcs[25]) ? ALU_OUT : //GateALU
                 (currentcs[20]) ? SP : 16'hzzzz; //GateSP
 
 always @(*) begin
+        /* SR1MUX */
+    case (currentcs[15:14])
+        2'b00 : SR1 <= IR[11:9];
+        2'b01 : SR1 <= IR[8:6];
+        2'b10 : SR1 <= 3'b110; //R6
+    endcase
+
+        /* DRMUX */
+    case (currentcs[17:16])
+        0 : DR <= IR[11:9];
+        1 : DR <= 3'b111; //R7
+        2 : DR <= 3'b110; //R6
+    endcase
+
     /* ADDR1MUX */
     case (currentcs[13])
          0 : addr1 <= PC;
@@ -96,8 +110,8 @@ always @(*) begin
     case (currentcs[12:11])
         0 : addr2 <= 0;
         1 : addr2 <= {{10{IR[5]}}, IR[5:0]}; //offset6, select SEXT[IR[5:0]]
-        2 : addr2 <= {{7{IR[5]}}, IR[8:0]}; //PCoffset9, select SEXT[IR[8:0]]
-        3 : addr2 <= {{5{IR[5]}}, IR[10:0]}; //PCoffset11, select SEXT[IR[10:0]]
+        2 : addr2 <= {{7{IR[8]}}, IR[8:0]}; //PCoffset9, select SEXT[IR[8:0]]
+        3 : addr2 <= {{5{IR[10]}}, IR[10:0]}; //PCoffset11, select SEXT[IR[10:0]]
     endcase
     
     /* MARMUX */
@@ -134,12 +148,18 @@ always @(posedge clk) begin
     /* LD_MDR */
     if (currentcs[37]) begin 
         assign MDR = d_out;
+        d_in <= global;
     end
+
+    // if (currentcs[1]) begin //R_W
+    //     d_in <= global;
+    // end
 
     /* LD_IR */
     if (currentcs[36]) begin
         IR <= global;
     end
+
 
     if (currentcs[35]) begin
         assign BEN = ((IR[11] & N) | (IR[10] & Z) | (IR[9] & P));
@@ -175,29 +195,22 @@ always @(posedge clk) begin
     //     0 : assign //individual settings
     //     1 : assign //BUS
     // endcase
-end
 
-always @(currentcs) begin
     /* LD_PC */
     if (currentcs[32]) begin
         PC <= PCMUX;
     end
 end
 
-always @(IR) begin
-    /* SR1MUX */
-    case (currentcs[15:14])
-        2'b00 : SR1 <= IR[11:9];
-        2'b01 : SR1 <= IR[8:6];
-        2'b10 : SR1 <= 3'b110; //R6
-    endcase
+always @(currentcs) begin
 
-    /* DRMUX */
-    case (currentcs[17:16])
-        0 : DR <= IR[11:9];
-        1 : DR <= 3'b110; //R6
-        2 : DR <= 3'b111; //R7
-    endcase
+
+end
+
+always @(IR) begin
+
+
+
 end
 
 endmodule

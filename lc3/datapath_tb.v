@@ -25,7 +25,8 @@ end
 
 always @(DATAPATH.REGFILE.regs[0] or DATAPATH.REGFILE.regs[1]) begin
 	$display("IR: %h", DATAPATH.IR, " R0: %h", DATAPATH.REGFILE.regs[0],
-		 " R1: %h", DATAPATH.REGFILE.regs[1]);
+		 " R1: %h", DATAPATH.REGFILE.regs[1],
+		 " R7: %h", DATAPATH.REGFILE.regs[7]);
 end
 
 task toggle_clk;
