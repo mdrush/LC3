@@ -202,15 +202,4 @@ always @(posedge clk) begin
     end
 end
 
-always @(currentcs) begin
-
-
-end
-
-always @(IR) begin
-
-
-
-end
-
 endmodule

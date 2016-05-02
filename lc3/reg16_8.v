@@ -25,9 +25,7 @@ assign SR1_OUT = regs[SR1];
 assign SR2_OUT = regs[SR2];
 
  always @(posedge clk) begin
-
         if (ld_reg)
            regs[DR] <= global;
-
 end
 endmodule
