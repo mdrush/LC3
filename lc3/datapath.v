@@ -1,7 +1,7 @@
 `include "reg16_8.v"
 `include "alu.v"
 `include "control.v"
-`include "memory.v"
+`include "mio.v"
 
 module datapath(clk, reset);
     input clk;
@@ -56,8 +56,8 @@ alu ALU(.A(SR1_OUT), .B(SR2MUX_OUT), .ALUK(currentcs[4:3]), .OUT(ALU_OUT));
 control CONTROL(.clk(clk), .BEN(BEN), .IR(IR), .R(R), .PSR(PSR[15]), .INT(INT),
     .currentcs(currentcs), .reset(reset));
 
-memory MEMORY(.clk(clk), .MIO_EN(currentcs[2]), .R_W(currentcs[1]), .a(MAR),
-	.d_out(d_out), .d_in(d_in), .R(R), .global(global));
+mio MIO(.clk(clk), .MIO_EN(currentcs[2]), .R_W(currentcs[1]), .a(MAR),
+	.mio_out(d_out), .d_in(MDR), .R(R));
 
 initial begin
 	BEN = 0;
@@ -68,7 +68,7 @@ end
 
 always @(posedge clk) begin
     if (reset) begin
-        PC <= 16'h3000;
+        PC <= 16'h0200;
         IR <= 16'h0000;
         MAR <= 16'h3000;
     end
@@ -116,8 +116,8 @@ always @(*) begin
     
     /* MARMUX */
     case (currentcs[8])
-        0 : MARMUX_OUT <= adder;
-        1 : MARMUX_OUT <= PC + {{8{1'b0}}, IR[7:0]}; //ZEXT[IR[7:0]]
+        1 : MARMUX_OUT <= adder;
+        0 : MARMUX_OUT <= {{8{1'b0}}, IR[7:0]}; //ZEXT[IR[7:0]]
     endcase
 
     /* PCMUX */
@@ -135,22 +135,32 @@ always @(*) begin
             end
         1 : SR2MUX_OUT <= {{11{IR[4]}}, IR[4:0]}; //SEXT
     endcase
-end
 
-
-always @(posedge clk) begin
-
-    /* LD_MAR */
+        /* LD_MAR */
     if (currentcs[38]) begin 
         MAR <= global;
     end
 
-    /* LD_MDR */
+        /* LD_MDR */
     if (currentcs[37]) begin 
-        assign MDR = d_out;
-        d_in <= global;
+        if (currentcs[2])
+            MDR <= d_out;
+        else
+            MDR <= global;
     end
+        /* LD_Vector */
+    if (currentcs[28]) begin
+        /* VectorMUX */
+        case (currentcs[7:6])
+            0 : Vector <= IR[7:0]; //INTV
+            1 : Vector <= 8'h00; //Priv.exception
+            2 : Vector <= 8'h01; //Opc.exception
+        endcase
+    end
+end
 
+
+always @(posedge clk) begin
     // if (currentcs[1]) begin //R_W
     //     d_in <= global;
     // end
@@ -180,15 +190,7 @@ always @(posedge clk) begin
     	3 : SPMUX_OUT <= SavedUSP;
     endcase
 
-    /* LD_Vector */
-    if (currentcs[28]) begin
-    	/* VectorMUX */
-    	case (currentcs[7:6])
-    		0 : Vector <= IR[7:0]; //INTV
-    		1 : Vector <= 8'h00; //Priv.exception
-    		2 : Vector <= 8'h01; //Opc.exception
-        endcase
-  	end
+
 
 	/* PSRMUX */
     // case (currentcs[5])
