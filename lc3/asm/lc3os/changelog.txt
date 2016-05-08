@@ -1,0 +1,3 @@
+1. Modified GETC to clear the keyboard status register (p202)
+
+2. OS_START now jumps to x3000 in order to start executing user code

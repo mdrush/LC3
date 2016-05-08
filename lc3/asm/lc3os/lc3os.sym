@@ -1,0 +1,42 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	OS_START          0200
+//	USER_CODE         0204
+//	OS_START_MSG      0205
+//	OS_KBSR           0213
+//	OS_KBDR           0214
+//	OS_DSR            0215
+//	OS_DDR            0216
+//	OS_MCR            0217
+//	MASK_HI           0218
+//	LOW_8_BITS        0219
+//	TOUT_R1           021A
+//	TIN_R7            021B
+//	OS_R0             021C
+//	OS_R1             021D
+//	OS_R2             021E
+//	OS_R3             021F
+//	OS_R7             0220
+//	TRAP_GETC         0221
+//	TRAP_OUT          0227
+//	TRAP_OUT_WAIT     0228
+//	TRAP_PUTS         022D
+//	TRAP_PUTS_LOOP    0231
+//	TRAP_PUTS_DONE    0236
+//	TRAP_IN           023A
+//	TRAP_PUTSP        0246
+//	TRAP_PUTSP_LOOP   024C
+//	TRAP_PUTSP_S_LOOP  0253
+//	TRAP_PUTSP_MSB_0  0257
+//	TRAP_PUTSP_DONE   025F
+//	TRAP_HALT         0265
+//	BAD_TRAP          026C
+//	INT_PRIV          026F
+//	INT_ILL           0270
+//	BAD_INT           0271
+//	TRAP_IN_MSG       0272
+//	TRAP_HALT_MSG     0287
+//	BAD_TRAP_MSG      02A4
+

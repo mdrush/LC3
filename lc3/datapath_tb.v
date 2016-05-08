@@ -3,6 +3,8 @@ module datapath_tb;
 	reg clk;
 	reg reset;
 
+	reg [15:0] keyboard [1:0];
+	integer key;
 
 datapath DATAPATH(.clk(clk), .reset(reset));
 
@@ -11,14 +13,14 @@ initial begin
 	$dumpvars(0, datapath_tb);
 
 	clk = 1;
-
+	DATAPATH.MIO.DSR = 16'h8000;
 	repeat(4) begin
 		toggle_clk;
 	end
 	reset = 1;
 	toggle_clk;
 	reset = 0;
-	repeat(50000) begin
+	while (1) begin
 		toggle_clk;
 	end
 end
@@ -39,9 +41,14 @@ end
 // 		 " | OS_MCR: %h", DATAPATH.MIO.MCR);
 // end
 
-always @(DATAPATH.MIO.DDR) begin
+always @(DATAPATH.MIO.DSR) begin
 	$write("%c", DATAPATH.MIO.DDR);
-	DATAPATH.MIO.DDR = 0;
+	DATAPATH.MIO.DSR = 16'h8000;
+end
+
+always @(!DATAPATH.MIO.KBSR) begin
+	getChar;
+	DATAPATH.MIO.KBSR = 16'h8000;
 end
 
 // OS_KBSR	.FILL xFE00
@@ -55,6 +62,16 @@ task toggle_clk;
         #10 clk = ~clk; // delay 10
         #10 clk = ~clk;
     end
+endtask
+
+task getChar;
+	begin
+		// while (keyboard[0] == 16'h0001) begin
+		// 	$readmemh("keyboard.txt", keyboard, 0, 1);
+		// end
+		key = $fgetc('h8000_0000);
+		DATAPATH.MIO.KBDR = key;
+	end
 endtask
 
 endmodule

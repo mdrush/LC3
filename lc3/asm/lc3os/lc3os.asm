@@ -555,9 +555,13 @@
 OS_START	; machine starts executing at x0200
 	LEA R0,OS_START_MSG	; print a welcome message
 	PUTS
-	HALT
+	LD R7, USER_CODE
+	JMP R7
+	;HALT
 
-OS_START_MSG	.STRINGZ "\nWelcome to the LC-3 simulator.\n\nThe contents of the LC-3 tools distribution, including sources, management\ntools, and data, are Copyright (c) 2003 Steven S. Lumetta.\n\nThe LC-3 tools distribution is free software covered by the GNU General\nPublic License, and you are welcome to modify it and/or distribute copies\nof it under certain conditions.  The file COPYING (distributed with the\ntools) specifies those conditions.  There is absolutely no warranty for\nthe LC-3 tools distribution, as described in the file NO_WARRANTY (also\ndistributed with the tools).\n\nHave fun.\n"
+USER_CODE .FILL x3000
+;OS_START_MSG	.STRINGZ "\nWelcome to the LC-3 simulator.\n\nThe contents of the LC-3 tools distribution, including sources, management\ntools, and data, are Copyright (c) 2003 Steven S. Lumetta.\n\nThe LC-3 tools distribution is free software covered by the GNU General\nPublic License, and you are welcome to modify it and/or distribute copies\nof it under certain conditions.  The file COPYING (distributed with the\ntools) specifies those conditions.  There is absolutely no warranty for\nthe LC-3 tools distribution, as described in the file NO_WARRANTY (also\ndistributed with the tools).\n\nHave fun.\n\n"
+OS_START_MSG	.STRINGZ "\nLoading...\n\n"
 
 OS_KBSR	.FILL xFE00
 OS_KBDR	.FILL xFE02
@@ -578,6 +582,8 @@ OS_R7   .BLKW 1
 TRAP_GETC
 	LDI R0,OS_KBSR		; wait for a keystroke
 	BRzp TRAP_GETC
+	AND R0, R0, #0
+	STI R0, OS_KBSR		; clear the status register
 	LDI R0,OS_KBDR		; read it and return
 	RET
 

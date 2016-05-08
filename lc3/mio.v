@@ -17,7 +17,7 @@ module mio(clk, MIO_EN, R_W, a, mio_out, d_in, R);
 	.d_out(d_out), .d_in(d_in), .R(R_mem));
 
 
-	input [15:0] KBDR; //0
+	reg [15:0] KBDR; //0
 	reg [15:0] KBSR; //1
 	reg [15:0] DDR;
 	reg [15:0] DSR; //2
@@ -31,7 +31,6 @@ module mio(clk, MIO_EN, R_W, a, mio_out, d_in, R);
 	reg MEM_EN;
 
 initial begin
-	DSR = 16'h8000;
 	MCR = 16'h8000;
 end
 
@@ -100,6 +99,7 @@ always @(posedge clk) begin
 
 	if (LD_DDR) begin
 		DDR <= d_in;
+		DSR <= 16'h0000;
 	end
 		
 
