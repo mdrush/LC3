@@ -37,6 +37,7 @@ module datapath(clk, reset);
     reg N;
     reg Z;
     reg P;
+    reg C;
 
     reg [15:0] MAR;
     reg [15:0] MDR;
@@ -45,13 +46,14 @@ module datapath(clk, reset);
     reg [15:0] d_in;
 
     wire [15:0] ALU_OUT;
+    wire C_ALU;
     reg [15:0] PCMUX;
 
 
 reg16_8 REGFILE(.clk(clk), .ld_reg(currentcs[34]), .SR1(SR1), .SR2(SR2), .DR(DR),
     .SR1_OUT(SR1_OUT), .SR2_OUT(SR2_OUT), .global(global));
 
-alu ALU(.A(SR1_OUT), .B(SR2MUX_OUT), .ALUK(currentcs[4:3]), .OUT(ALU_OUT));
+alu ALU(.A(SR1_OUT), .B(SR2MUX_OUT), .ALUK(currentcs[4:3]), .OUT(ALU_OUT), .C(C_ALU));
 
 control CONTROL(.clk(clk), .BEN(BEN), .IR(IR), .R(R), .PSR(PSR[15]), .INT(INT),
     .currentcs(currentcs), .reset(reset));
@@ -64,6 +66,7 @@ initial begin
     N = 0;
     P = 0;
     Z = 0;
+    C = 0;
 end
 
 always @(posedge clk) begin
@@ -172,7 +175,7 @@ always @(posedge clk) begin
 
 
     if (currentcs[35]) begin
-        assign BEN = ((IR[11] & N) | (IR[10] & Z) | (IR[9] & P));
+        assign BEN = ((IR[11] & N) | (IR[10] & Z) | (IR[9] & P) | (!(N|Z|P) & C));
     end
 	
     /* LD_CC */
@@ -180,6 +183,7 @@ always @(posedge clk) begin
     	N <= global[15];
     	P <= ~global[15] & (|global); //Reduction Operators
     	Z <= ~global[15] & ~(|global);
+        C <= C_ALU;
     end
 
     /* SPMUX */

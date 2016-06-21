@@ -12,7 +12,7 @@ module memory(clk, MEM_EN, R_W, a, d_in, d_out, R);
 initial begin
 	$readmemh("asm/lc3os/lc3os.obj", data_RAM);
 	//$readmemh("ram.obj", data_RAM);
-	$readmemh("asm/a.obj", data_RAM);
+	$readmemh("asm/32bit.obj", data_RAM);
 end
 
 always @(posedge clk) begin
