@@ -1,0 +1,15 @@
+.ORIG x3000
+
+MOV R0, x31
+OUT
+
+MOVt R0, x35
+OUT
+
+MOV R0, x35
+OUT
+
+MOV R0, xA
+OUT
+
+HALT

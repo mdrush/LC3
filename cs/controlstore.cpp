@@ -5,7 +5,7 @@
 using namespace std;
 
 enum controls {
-	LD_MAR, LD_MDR, LD_IR, LD_BEN, LD_REG, LD_CC, LD_PC, LD_Priv, 
+	GateMOV, LD_MAR, LD_MDR, LD_IR, LD_BEN, LD_REG, LD_CC, LD_PC, LD_Priv, 
 	LD_SavedSSP, LD_SavedUSP, LD_Vector,
 	GatePC, GateMDR, GateALU, GateMARMUX, GateVector, GatePCm1, GatePSR, GateSP
 };
@@ -16,7 +16,7 @@ struct microinstruction {
 	//bool J[6];
 	string comment;
 
-	bool control[19];
+	bool control[20];
 
 	bool PCMUX[2];
 	bool DRMUX[2];
@@ -41,7 +41,7 @@ struct microinstruction {
 	}
 
 	void display() {
-		displayArray(control, 19);
+		displayArray(control, 20);
 		displayArray(PCMUX, 2);
 		displayArray(DRMUX, 2);
 		displayArray(SR1MUX, 2);
@@ -151,8 +151,12 @@ int main() {
 	setArray(states[12].SR1MUX, "01");
 	states[12].ADDR1MUX = 1;
 
-	states[13].setControl(LD_MDR, LD_Priv, LD_Vector, GatePSR);
-	setArray(states[13].VectorMUX, "10");
+	//states[13].setControl(LD_MDR, LD_Priv, LD_Vector, GatePSR);
+	//setArray(states[13].VectorMUX, "10");
+	states[13].comment = "MOV";
+	states[13].setControl(LD_REG, GateMOV);
+	setArray(states[13].DRMUX, "00");
+	// should LD_CC be asserted?
 
 	states[14].comment = "LEA";
 	states[14].setControl(LD_REG, LD_CC, GateMARMUX);

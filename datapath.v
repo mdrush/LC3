@@ -9,7 +9,7 @@ module datapath(clk, reset);
     reg [15:0] IR;
 
     wire [15:0] global;
-    wire [38:0] currentcs;
+    wire [39:0] currentcs;
     reg BEN; //p131-132
     wire R;
     reg [15:0] PSR;
@@ -49,6 +49,8 @@ module datapath(clk, reset);
     wire C_ALU;
     reg [15:0] PCMUX;
 
+    wire [15:0] MOV_OUT;
+
 
 reg16_8 REGFILE(.clk(clk), .ld_reg(currentcs[34]), .SR1(SR1), .SR2(SR2), .DR(DR),
     .SR1_OUT(SR1_OUT), .SR2_OUT(SR2_OUT), .global(global));
@@ -79,6 +81,9 @@ end
 
 assign adder = addr1 + addr2;
 
+assign MOV_OUT = IR[8] ? (SR1_OUT & 8'hFF) | (IR[7:0] << 8) :
+                 {8'h01, IR[7:0]};
+
 assign global = (currentcs[25]) ? ALU_OUT : //GateALU
                 (currentcs[24]) ? MARMUX_OUT : //GateMARMUX 
                 (currentcs[27]) ? PC : //GatePC
@@ -86,7 +91,8 @@ assign global = (currentcs[25]) ? ALU_OUT : //GateALU
                 (currentcs[23]) ? {8'h01, Vector} : //GateVector
                 (currentcs[22]) ? (PC - 16'b1) : //GatePC-1
                 (currentcs[21]) ? PSR : //GatePSR
-                (currentcs[20]) ? SP : 16'hzzzz; //GateSP
+                (currentcs[20]) ? SP : //GateSP
+                (currentcs[39]) ? MOV_OUT : 16'hzzzz; //GateMOV
 
 always @(*) begin
         /* SR1MUX */

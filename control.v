@@ -9,8 +9,8 @@ module control(clk, BEN, IR, R, PSR, INT, currentcs, reset);
     input INT;
 
     reg [5:0] state;
-    reg [38:0] controlsig [63:0];
-    output wire [38:0] currentcs;
+    reg [39:0] controlsig [63:0];
+    output wire [39:0] currentcs;
 
 
 initial begin
@@ -153,8 +153,11 @@ always @(posedge clk) begin
         end
         
         13 : begin
-            if (PSR) state <= 37;
-            else state <= 45;
+        // MOVri
+        // Should only take 1 cycle
+            state <= 18;
+        //    if (PSR) state <= 37;
+        //    else state <= 45;
         end
         
         8 : begin
